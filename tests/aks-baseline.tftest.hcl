@@ -62,7 +62,7 @@ run "provision" {
   }
 
   assert {
-    condition     = length(data.azurerm_kubernetes_cluster.main.name) > 0
+    condition     = length(azurerm_kubernetes_cluster.main.name) > 0
     error_message = "Must have a valid AKS Cluster Name"
   }
 }
