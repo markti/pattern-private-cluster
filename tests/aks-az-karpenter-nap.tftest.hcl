@@ -46,7 +46,7 @@ run "provision" {
   command = apply
 
   module {
-    source = "./src/terraform/aks-baseline"
+    source = "./src/terraform/aks-karpenter-nap"
   }
 
   variables {
@@ -55,6 +55,30 @@ run "provision" {
     application_name    = "tft-${run.name.suffix}"
     environment_name    = "test"
     vm_size             = run.vm_size.candidate_sku
+    zones               = ["1", "2", "3"]
+  }
+
+  providers = {
+    azurerm = azurerm
+  }
+
+  assert {
+    condition     = length(data.azurerm_kubernetes_cluster.main.name) > 0
+    error_message = "Must have a valid AKS Cluster Name"
+  }
+}
+
+run "k8s" {
+
+  command = apply
+
+  module {
+    source = "./src/terraform/k8s-karpenter-nap"
+  }
+
+  variables {
+    resource_group_name = run.provision.resource_group_name
+    aks_cluster_name    = run.provision.aks_cluster_name
   }
 
   providers = {

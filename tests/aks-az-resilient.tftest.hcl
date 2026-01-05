@@ -46,7 +46,7 @@ run "provision" {
   command = apply
 
   module {
-    source = "./src/terraform/aks-baseline"
+    source = "./src/terraform/aks-az-resilient"
   }
 
   variables {
@@ -55,6 +55,7 @@ run "provision" {
     application_name    = "tft-${run.name.suffix}"
     environment_name    = "test"
     vm_size             = run.vm_size.candidate_sku
+    zones               = ["1", "2", "3"]
   }
 
   providers = {
